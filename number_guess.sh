@@ -4,7 +4,10 @@ PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 echo Enter your username:
 read NAME
-
+  #games played
+GAMES_PLAYED=$($PSQL "SELECT games_played FROM number_guess WHERE username='$NAME'")
+  #best game
+BEST_GAME=$($PSQL "SELECT best_game FROM number_guess WHERE username='$NAME'")
 #welcome new or old user
 USERNAME=$($PSQL "SELECT username FROM number_guess WHERE username='$NAME'")
 if [[ -z $USERNAME  ]]
@@ -15,10 +18,7 @@ else
   echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
-  #games played
-GAMES_PLAYED=$($PSQL "SELECT games_played FROM number_guess WHERE username='$USERNAME'")
-  #best game
-BEST_GAME=$($PSQL "SELECT best_game FROM number_guess WHERE username='$USERNAME'")
+
  
 
 SECRET_NUMBER=$(( RANDOM % 10 + 1 ))
@@ -37,10 +37,11 @@ do
   elif  [[  $USER_GUESS -lt $SECRET_NUMBER  ]]
   then
     echo "It's higher than that, guess again:"
-  (( GUESS_COUNT++ ))
+  
   fi
+  (( GUESS_COUNT++ ))
 done
-echo "You guessed it in $GUESS_COUNT tries. The secret number was $USER_GUESS. Nice job!"
+
 
 
 if [[ -z $GAMES_PLAYED ]]
@@ -60,3 +61,6 @@ else
   UPDATE_RESULT=$($PSQL "UPDATE number_guess SET games_played=$GAMES_PLAYED WHERE username = '$USERNAME' ")  
 fi
 
+echo "You guessed it in $GUESS_COUNT tries. The secret number was $USER_GUESS. Nice job!"
+
+exit
