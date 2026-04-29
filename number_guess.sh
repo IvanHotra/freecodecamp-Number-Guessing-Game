@@ -9,20 +9,19 @@ read NAME
 USERNAME=$($PSQL "SELECT username FROM number_guess WHERE username='$NAME'")
 if [[ -z $USERNAME  ]]
 then
-  #then add user
-  ADD_USER=$($PSQL "INSERT INTO number_guess(username) VALUES('$NAME')")
   USERNAME=$NAME
   echo "Welcome, $USERNAME! It looks like this is your first time here."
+else
+  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
   #games played
 GAMES_PLAYED=$($PSQL "SELECT games_played FROM number_guess WHERE username='$USERNAME'")
   #best game
 BEST_GAME=$($PSQL "SELECT best_game FROM number_guess WHERE username='$USERNAME'")
-  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+ 
 
-
-SECRET_NUMBER=$(( RANDOM % 1000 + 1 ))
+SECRET_NUMBER=$(( RANDOM % 10 + 1 ))
 echo "Guess the secret number between 1 and 1000:"
 USER_GUESS=0
 GUESS_COUNT=0
